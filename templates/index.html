@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Consentimiento para Tatuajes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Consentimiento para la práctica del tatuaje</h1>
+        <p>En Valencia, a _____ de ______________ de 20_____</p>
+
+        <h2>Datos cliente</h2>
+        <form id="consentForm" action="/submit" method="POST">
+            <label for="full_name">Nombre y apellidos completo:</label>
+            <input type="text" id="full_name" name="full_name" required>
+
+            <label for="dni">Dni/Passaporte:</label>
+            <input type="text" id="dni" name="dni" required>
+
+            <label for="age">Edad:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="dob">Fecha de nacimiento:</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="address">Dirección:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="city">Localidad:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="phone">Teléfono:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" name="email" required>
+
+            <h3>Marca Si en caso de:</h3>
+
+            <label for="cardiac_issues">Problemas cardíacos:</label>
+            <select id="cardiac_issues" name="cardiac_issues" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="epilepsy">Epilepsia declarada:</label>
+            <select id="epilepsy" name="epilepsy" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="hepatitis">Hepatitis:</label>
+            <select id="hepatitis" name="hepatitis" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="syphilis">Sífilis:</label>
+            <select id="syphilis" name="syphilis" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="hiv">Vih (Sida):</label>
+            <select id="hiv" name="hiv" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="drug_use">Consumo de drogas (antes de la práctica del tatuaje):</label>
+            <select id="drug_use" name="drug_use" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <label for="alcohol_use">Consumo de alcohol (antes de la práctica del tatuaje):</label>
+            <select id="alcohol_use" name="alcohol_use" required>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+            </select>
+
+            <h2>Datos del profesional:</h2>
+
+            <label for="tattoo_artist">Nombre y apellidos completo:</label>
+            <input type="text" id="tattoo_artist" name="tattoo_artist" value="Patricia Mª Pérez Marín" readonly>
+
+            <label for="tattoo_details">Detalle de tatuaje y zona:</label>
+            <input type="text" id="tattoo_details" name="tattoo_details" required>
+
+            <label for="tattoo_ink">Pigmentos y accesorios utilizables:</label>
+            <input type="text" id="tattoo_ink" name="tattoo_ink" value="Tinta PANTHERA y agujas desechables KWADRON" readonly>
+
+            <h2>Autorización del representante legal (En caso de ser menor de edad y/o persona discapacitada)</h2>
+
+            <label for="legal_guardian">Nombre y apellidos completo del representante:</label>
+            <input type="text" id="legal_guardian" name="legal_guardian">
+
+            <label for="legal_dni">Dni/Passaporte del representante:</label>
+            <input type="text" id="legal_dni" name="legal_dni">
+
+            <label for="legal_dob">Fecha de nacimiento del representante:</label>
+            <input type="date" id="legal_dob" name="legal_dob">
+
+            <label for="legal_address">Dirección del representante:</label>
+            <input type="text" id="legal_address" name="legal_address">
+
+            <label for="legal_city">Localidad del representante:</label>
+            <input type="text" id="legal_city" name="legal_city">
+
+            <h2>Riesgos y complicaciones de la práctica</h2>
+            <p>No es recomendable realizarle una práctica de tatuaje en caso de:</p>
+            <ul>
+                <li>Haber consumido alcohol o estupefacientes en las últimas 24h.</li>
+                <li>Si has estado expuesto al sol/rayos UV en las últimas 24h o si la zona está irritada por el mismo.</li>
+                <li>Si tienes alguna alergia.</li>
+                <li>Si estás en tratamiento con anticoagulantes, tratamientos para el acné u otras enfermedades dermatológicas o tomas medicamentos que modifiquen tu respuesta inmunitaria.</li>
+                <li>Si tienes problemas de trombocitopenia o hemofilia, así como problemas dermatológicos.</li>
+                <li>Si estás en periodo de gestación o lactancia o crees poder estarlo.</li>
+                <li>Si tienes alguna enfermedad crónica o temporal que favorezca la aparición de infecciones.</li>
+                <li>Si sufres epilepsia o tienes problemas cardíacos y/o válvula en el corazón.</li>
+            </ul>
+
+            <h2>Declaración de consentimiento</h2>
+            <p>Conforme y de acuerdo a lo anterior, siendo mayor de edad y en pleno uso de mis facultades mentales, yo, <input type="text" id="client_name" name="client_name" required> manifiesto:</p>
+            <ul>
+                <li>Que doy mi consentimiento para que se realice la práctica señalada.</li>
+                <li>Afirmo que me comprometo a seguir los cuidados posteriores al tatuaje, eximiendo de toda responsabilidad al tatuador y al estudio NOXÌA sobre cualquier reacción o infección que pudiera producirse por mi propia negligencia.</li>
+                <li>Asumo que soy responsable de comprobar los detalles del diseño de mi tatuaje, la imagen, su localización y cualquier texto incorporado en él antes de proceder a efectuarlo y entiendo que la tatuadora no acepta ninguna responsabilidad por errores o por faltas de ortografía.</li>
+                <li>Siendo consciente, eximo de toda responsabilidad al establecimiento y a su artista por cualquier discriminación que pudiera sufrir por el hecho de tener un tatuaje plasmado en mi cuerpo, sea visible o no, así como si sufriera cualquier tipo de accidente dentro del estudio; a detallar:lipotimia/s, nausea/s, vómito/s, desmallo/s, caida/s y/o corte/s a causa de las mismas, también por descomposiciones psicofísicas de cualquier índole, compormetiéndome a pagar todo y cualquier daño que causase a sus instalaciones, su artista y/o terceros en él, involucrados o no en la práctica del tatuaje.</li>
+                <li>Acepto la cesión de mis derechos de imagen (uso del trabajo para difusión en redes sociales, y/o como referencias).</li>
+            </ul>
+
+            <label for="signature">Firmo en conformidad:</label>
+            <canvas id="firmaCanvas" width="400" height="150" style="border: 1px solid #d4af37;"></canvas>
+            <br>
+            <button type="button" onclick="clearSignature()">Borrar Firma</button>
+            <br>
+
+            <!-- Mensaje de política de privacidad -->
+            <p class="privacy-policy">
+                Al marcar la casilla aceptas que los datos personales que nos proporcionas serán tratados de acuerdo con nuestra
+                <a href="/politica-de-privacidad" target="_blank">Política de Privacidad</a>. Los datos se utilizarán para dar consentimiento de la práctica del tatuaje y cumplir con las finalidades detalladas en dicha política. Tienes derecho a acceder, rectificar, eliminar y oponerte al tratamiento de tus datos en cualquier momento. Con ello das consentimiento para recibir publicidad al correo o teléfono proporcionado.
+            </p>
+            <label>
+                <input type="checkbox" name="consentimiento" value="true" required>
+            </label><br><br>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
