@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request
 from waitress import serve
-from app import app  # Asegúrate de que 'app' es tu instancia de Flask
 
-if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
-
+# Crear la instancia de Flask
 app = Flask(__name__)
 
 @app.route('/')
@@ -41,4 +38,5 @@ def submit_form():
     return "Formulario enviado con éxito"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Usar waitress en lugar de app.run() para producción
+    serve(app, host='0.0.0.0', port=5000)
