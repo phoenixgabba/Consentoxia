@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="politica-container">
+        <header>
+            <h1>Política de Privacidad</h1>
+        </header>
+
+        <section class="contenido">
+            <p>En <strong>Noxîa</strong>, respetamos y protegemos la privacidad de nuestros usuarios. Esta política de privacidad explica cómo recopilamos, usamos y protegemos la información que nos proporcionas a través de nuestro sitio web.</p>
+
+            <h2>1. Información que Recopilamos</h2>
+            <p>Recopilamos la siguiente información personal cuando decides registrarte en nuestro sitio web o enviarnos un formulario:</p>
+            <ul>
+                <li>Nombre y apellidos</li>
+                <li>Correo electrónico y número de contacto</li>
+                <li>Información del tatuaje (diseño, tamaño, ubicación en el cuerpo)</li>
+                <li>Fotografías de referencia</li>
+            </ul>
+
+            <h2>2. Uso de la Información</h2>
+            <p>La información recopilada se utiliza con los siguientes fines:</p>
+            <ul>
+                <li>Gestionar tu solicitud de tatuaje.</li>
+                <li>Comunicarte acerca de tu cita y detalles relacionados.</li>
+                <li>Proveer un mejor servicio y personalización en nuestros diseños.</li>
+            </ul>
+
+            <h2>3. Cómo Protegemos tu Información</h2>
+            <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal contra el acceso no autorizado, la divulgación, alteración o destrucción.</p>
+
+            <h2>4. Compartir tu Información</h2>
+            <p>No compartimos tu información personal con terceros, salvo que sea necesario para cumplir con nuestras obligaciones legales o en el contexto de un servicio que estés solicitando (por ejemplo, un proveedor de pagos).</p>
+
+            <h2>5. Derechos del Usuario</h2>
+            <p>Tienes derecho a:</p>
+            <ul>
+                <li>Acceder a tus datos personales.</li>
+                <li>Solicitar la rectificación o eliminación de tus datos.</li>
+                <li>Restringir el procesamiento de tus datos.</li>
+                <li>Oponerte al uso de tus datos para fines específicos.</li>
+            </ul>
+            <p>Para ejercer estos derechos, por favor, contacta con nosotros a través de <strong>noxiagallery@gmail.com</strong>.</p>
+
+            <h2>6. Cookies</h2>
+            <p>Este sitio web utiliza cookies para mejorar la experiencia del usuario. Las cookies se utilizan para personalizar contenido, analizar el tráfico web y realizar mejoras en el sitio.</p>
+            <p>Al continuar usando este sitio, aceptas el uso de cookies según nuestra <a href="/politica-de-cookies"
+            <!-- Enlace a la Política de Cookies -->
+            <p class="privacy-policy">
+                <a href="{{ url_for('politica_cookies') }}" target="_blank">Política de Cookies</a>
+            </p>
+
+
+            <h2>7. Cambios en la Política de Privacidad</h2>
+            <p>Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Las modificaciones serán publicadas en esta página con una fecha de actualización.</p>
+
+            <p>Última actualización: <strong>21/05/2025</strong></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Noxîa Gallery - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

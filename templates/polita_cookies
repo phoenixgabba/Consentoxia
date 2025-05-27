@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Cookies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="politica-container">
+        <header>
+            <h1>Política de Cookies</h1>
+        </header>
+
+        <section class="contenido">
+            <p>Esta Política de Cookies explica qué son las cookies, cómo las usamos en <strong>Noxîa</strong>, y cómo puedes controlarlas.</p>
+
+            <h2>1. ¿Qué son las cookies?</h2>
+            <p>Las cookies son pequeños archivos de texto que se almacenan en tu navegador cuando visitas una página web. Sirven para reconocer tu dispositivo en futuras visitas y mejorar tu experiencia de navegación.</p>
+
+            <h2>2. Tipos de cookies que utilizamos</h2>
+            <ul>
+                <li><strong>Cookies técnicas:</strong> necesarias para el funcionamiento básico del sitio.</li>
+                <li><strong>Cookies de personalización:</strong> permiten recordar tus preferencias (idioma, configuración, etc.).</li>
+                <li><strong>Cookies analíticas:</strong> nos ayudan a entender cómo interactúan los usuarios con nuestra web (por ejemplo, mediante Google Analytics).</li>
+            </ul>
+
+            <h2>3. Cookies de terceros</h2>
+            <p>En algunos casos, utilizamos cookies de terceros como Google Analytics para obtener estadísticas de uso del sitio. Estas cookies son gestionadas por terceros y están sujetas a sus propias políticas de privacidad.</p>
+
+            <h2>4. Consentimiento</h2>
+            <p>Al acceder a nuestra web, verás un banner de consentimiento de cookies. Si aceptas, estarás consintiendo el uso de cookies según lo descrito en esta política.</p>
+
+            <h2>5. Cómo desactivar las cookies</h2>
+            <p>Puedes configurar tu navegador para bloquear o eliminar las cookies en cualquier momento. A continuación, te dejamos enlaces a las instrucciones para los navegadores más comunes:</p>
+            <ul>
+                <li><a href="https://support.google.com/chrome/answer/95647?hl=es" target="_blank">Google Chrome</a></li>
+                <li><a href="https://support.mozilla.org/es/kb/habilitar-deshabilitar-cookies-sitios-web-rastrear-preferencias" target="_blank">Mozilla Firefox</a></li>
+                <li><a href="https://support.apple.com/es-es/HT201265" target="_blank">Safari</a></li>
+                <li><a href="https://support.microsoft.com/es-es/help/17442/windows-internet-explorer-delete-manage-cookies" target="_blank">Internet Explorer</a></li>
+            </ul>
+
+            <h2>6. Cambios en la Política de Cookies</h2>
+            <p>Podemos actualizar esta política en cualquier momento. Te recomendamos revisar esta página periódicamente para estar informado de cualquier cambio.</p>
+
+            <p>Última actualización: <strong>21/05/2025</strong></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Noxîa Gallery - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
