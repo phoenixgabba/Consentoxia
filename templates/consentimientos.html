@@ -31,15 +31,15 @@
             padding: 15px;
             border-radius: 6px;
             background-color: #f9f9f9;
+            font-size: 1.1em;
         }
-        ul.consent-list > li > h2 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.4em;
+        ul.consent-list > li a.detail-link {
+            color: #337ab7;
+            text-decoration: none;
+            font-weight: bold;
         }
-        ul.consent-list > li p {
-            margin: 4px 0;
-            font-size: 0.9em;
+        ul.consent-list > li a.detail-link:hover {
+            text-decoration: underline;
         }
         button.delete-btn {
             background-color: #d9534f;
@@ -49,25 +49,16 @@
             border-radius: 4px;
             cursor: pointer;
             margin-top: 10px;
+            float: right;
         }
         button.delete-btn:hover {
             background-color: #c9302c;
         }
-        a.view-firma {
-            display: inline-block;
-            margin-top: 10px;
-            background-color: #5bc0de;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-        a.view-firma:hover {
-            background-color: #31b0d5;
-        }
         form.inline {
             display: inline;
+        }
+        .clear-fix {
+            clear: both;
         }
     </style>
 </head>
@@ -80,39 +71,15 @@
         <ul class="consent-list">
             {% for fila in consentimientos %}
                 <li>
-                    <h2>{{ fila['Nombre'] }} — DNI: {{ fila['DNI'] }}</h2>
-                    <p><strong>Edad:</strong> {{ fila['Edad'] }}</p>
-                    <p><strong>Fecha Nacimiento:</strong> {{ fila['Fecha Nacimiento'] }}</p>
-                    <p><strong>Dirección:</strong> {{ fila['Dirección'] }}, {{ fila['Localidad'] }}</p>
-                    <p><strong>Teléfono:</strong> {{ fila['Teléfono'] }}</p>
-                    <p><strong>Email:</strong> {{ fila['Email'] }}</p>
-                    <p><strong>Problemas Cardíacos:</strong> {{ fila['Problemas Cardíacos'] }}</p>
-                    <p><strong>Epilepsia:</strong> {{ fila['Epilepsia'] }}</p>
-                    <p><strong>Hepatitis:</strong> {{ fila['Hepatitis'] }}</p>
-                    <p><strong>Sífilis:</strong> {{ fila['Sífilis'] }}</p>
-                    <p><strong>VIH:</strong> {{ fila['VIH'] }}</p>
-                    <p><strong>Consumo Drogas:</strong> {{ fila['Consumo Drogas'] }}</p>
-                    <p><strong>Consumo Alcohol:</strong> {{ fila['Consumo Alcohol'] }}</p>
-                    <p><strong>Tatuador:</strong> {{ fila['Tatuador'] }}</p>
-                    <p><strong>Detalles Tatuaje:</strong> {{ fila['Detalles Tatuaje'] }}</p>
-                    <p><strong>Tinta/Acessorios:</strong> {{ fila['Tinta/Acessorios'] }}</p>
-                    <p><strong>Rep Legal Nombre:</strong> {{ fila['Rep Legal Nombre'] }}</p>
-                    <p><strong>Rep Legal DNI:</strong> {{ fila['Rep Legal DNI'] }}</p>
-                    <p><strong>Rep Legal Fecha Nac:</strong> {{ fila['Rep Legal Fecha Nac'] }}</p>
-                    <p><strong>Rep Legal Dirección:</strong> {{ fila['Rep Legal Dirección'] }}</p>
-                    <p><strong>Rep Legal Localidad:</strong> {{ fila['Rep Legal Localidad'] }}</p>
-                    <p><strong>Fecha Consentimiento:</strong> {{ fila['Fecha Consentimiento'] }}</p>
-
-                    {% if fila['Firma Archivo'].endswith('.png') %}
-                        <a href="{{ url_for('serve_firma', filename=fila['Firma Archivo']) }}" target="_blank" class="view-firma">Ver Firma</a>
-                    {% else %}
-                        <p><strong>Firma Archivo:</strong> {{ fila['Firma Archivo'] }}</p>
-                    {% endif %}
+                    <a href="{{ url_for('detalle_consentimiento', consentimiento_id=fila['id']) }}" class="detail-link">
+                        {{ fila['Nombre'] }}
+                    </a> — Teléfono: {{ fila['Teléfono'] }}
 
                     <form method="POST" action="{{ url_for('borrar_consentimiento') }}" class="inline" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
                         <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
                         <button type="submit" class="delete-btn">Borrar</button>
                     </form>
+                    <div class="clear-fix"></div>
                 </li>
             {% endfor %}
         </ul>

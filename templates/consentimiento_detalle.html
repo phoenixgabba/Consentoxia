@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consentimiento Completo - {{ consentimiento['Nombre'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px auto;
+            max-width: 700px;
+            line-height: 1.5em;
+            color: #222;
+            background-color: white;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        p {
+            margin: 6px 0;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .signature img {
+            max-width: 300px;
+            border: 1px solid #ccc;
+        }
+        a.back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #337ab7;
+        }
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('ver_consentimientos') }}" class="back-link">&larr; Volver a la lista</a>
+    <h1>Consentimiento Informado</h1>
+    <h2>{{ consentimiento['Nombre'] }}</h2>
+
+    <div class="section">
+        <strong>DNI:</strong> {{ consentimiento['DNI'] }}<br>
+        <strong>Edad:</strong> {{ consentimiento['Edad'] }}<br>
+        <strong>Fecha Nacimiento:</strong> {{ consentimiento['Fecha Nacimiento'] }}<br>
+        <strong>Dirección:</strong> {{ consentimiento['Dirección'] }}, {{ consentimiento['Localidad'] }}<br>
+        <strong>Teléfono:</strong> {{ consentimiento['Teléfono'] }}<br>
+        <strong>Email:</strong> {{ consentimiento['Email'] }}<br>
+    </div>
+
+    <div class="section">
+        <h3>Historial Médico</h3>
+        <p><strong>Problemas Cardíacos:</strong> {{ consentimiento['Problemas Cardíacos'] }}</p>
+        <p><strong>Epilepsia:</strong> {{ consentimiento['Epilepsia'] }}</p>
+        <p><strong>Hepatitis:</strong> {{ consentimiento['Hepatitis'] }}</p>
+        <p><strong>Sífilis:</strong> {{ consentimiento['Sífilis'] }}</p>
+        <p><strong>VIH:</strong> {{ consentimiento['VIH'] }}</p>
+        <p><strong>Consumo Drogas:</strong> {{ consentimiento['Consumo Drogas'] }}</p>
+        <p><strong>Consumo Alcohol:</strong> {{ consentimiento['Consumo Alcohol'] }}</p>
+    </div>
+
+    <div class="section">
+        <h3>Información del Tatuaje</h3>
+        <p><strong>Tatuador:</strong> {{ consentimiento['Tatuador'] }}</p>
+        <p><strong>Detalles Tatuaje:</strong> {{ consentimiento['Detalles Tatuaje'] }}</p>
+        <p><strong>Tinta/Acessorios:</strong> {{ consentimiento['Tinta/Acessorios'] }}</p>
+    </div>
+
+    <div class="section">
+        <h3>Representante Legal</h3>
+        <p><strong>Nombre:</strong> {{ consentimiento['Rep Legal Nombre'] }}</p>
+        <p><strong>DNI:</strong> {{ consentimiento['Rep Legal DNI'] }}</p>
+        <p><strong>Fecha Nacimiento:</strong> {{ consentimiento['Rep Legal Fecha Nac'] }}</p>
+        <p><strong>Dirección:</strong> {{ consentimiento['Rep Legal Dirección'] }}</p>
+        <p><strong>Localidad:</strong> {{ consentimiento['Rep Legal Localidad'] }}</p>
+    </div>
+
+    <div class="section signature">
+        <h3>Firma</h3>
+        {% if consentimiento['Firma Archivo'].endswith('.png') %}
+            <img src="{{ url_for('serve_firma', filename=consentimiento['Firma Archivo']) }}" alt="Firma de {{ consentimiento['Nombre'] }}">
+        {% else %}
+            <p>No hay firma disponible.</p>
+        {% endif %}
+        <p><em>Fecha Consentimiento: {{ consentimiento['Fecha Consentimiento'] }}</em></p>
+    </div>
+</body>
+</html>

@@ -157,11 +157,25 @@ def ver_consentimientos():
                         pass
     return render_template('consentimientos.html', consentimientos=datos)
 
+@app.route('/consentimiento/<consentimiento_id>')
+@login_required
+def detalle_consentimiento(consentimiento_id):
+    path_json = os.path.join(DOCS_FOLDER, f"{consentimiento_id}.json")
+    if not os.path.exists(path_json):
+        flash("No se encontró el consentimiento solicitado.")
+        return redirect(url_for('ver_consentimientos'))
+    try:
+        with open(path_json, encoding='utf-8') as fjson:
+            consentimiento = json.load(fjson)
+    except Exception as e:
+        flash(f"Error al cargar el consentimiento: {e}")
+        return redirect(url_for('ver_consentimientos'))
+    return render_template('consentimiento_detalle.html', consentimiento=consentimiento)
+
 @app.route('/firmas/<filename>')
 @login_required
 def serve_firma(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
-
 
 @app.route('/borrar_consentimiento', methods=['POST'])
 @login_required
