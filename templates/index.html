@@ -141,7 +141,6 @@
             <br />
             <button type="button" onclick="clearSignature()">Borrar Firma</button>
             <br />
-
             <input type="hidden" id="signature" name="signature" />
 
             <!-- Mensaje de política de privacidad -->
@@ -158,7 +157,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='firma.js') }}"></script>
-
     <script>
         window.addEventListener('load', () => {
             const fechaInput = document.getElementById('consent_date');
@@ -166,6 +164,12 @@
                 const today = new Date().toISOString().split('T')[0];
                 fechaInput.value = today;
             }
+        });
+
+        document.getElementById('consentForm').addEventListener('submit', function () {
+            const canvas = document.getElementById('firmaCanvas');
+            const dataURL = canvas.toDataURL();
+            document.getElementById('signature').value = dataURL;
         });
     </script>
 </body>
