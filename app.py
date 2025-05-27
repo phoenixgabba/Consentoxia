@@ -1,6 +1,7 @@
 import os
 import base64
-import csv
+import json
+import uuid
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash
 from functools import wraps
 from waitress import serve
@@ -12,9 +13,12 @@ UPLOAD_FOLDER = 'firmas'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+DOCS_FOLDER = 'consentimientos_docs'
+if not os.path.exists(DOCS_FOLDER):
+    os.makedirs(DOCS_FOLDER)
+
 USUARIO = 'La Nuit'
 CONTRASENA = '1551'
-CSV_FILE = 'consentimientos.csv'
 
 # Decorador para requerir login con sesión
 def login_required(f):
@@ -52,7 +56,6 @@ def logout():
 
 @app.route('/submit', methods=['POST'])
 def submit_form():
-    # Recoger todos los campos enviados desde el formulario
     full_name = request.form.get('full_name')
     dni = request.form.get('dni')
     age = request.form.get('age')
@@ -100,30 +103,41 @@ def submit_form():
         except Exception as e:
             return f"Error al guardar la firma: {e}"
 
-    # Guardar datos en CSV
+    # Guardar datos en archivo JSON
     try:
-        file_exists = os.path.exists(CSV_FILE)
-        with open(CSV_FILE, 'a', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            if not file_exists:
-                writer.writerow([
-                    'Nombre', 'DNI', 'Edad', 'Fecha Nacimiento', 'Dirección', 'Localidad', 'Teléfono', 'Email',
-                    'Problemas Cardíacos', 'Epilepsia', 'Hepatitis', 'Sífilis', 'VIH',
-                    'Consumo Drogas', 'Consumo Alcohol',
-                    'Tatuador', 'Detalles Tatuaje', 'Tinta/Acessorios',
-                    'Rep Legal Nombre', 'Rep Legal DNI', 'Rep Legal Fecha Nac', 'Rep Legal Dirección', 'Rep Legal Localidad',
-                    'Firma Archivo', 'Fecha Consentimiento'
-                ])
-            writer.writerow([
-                full_name, dni, age, dob, address, city, phone, email,
-                cardiac_issues, epilepsy, hepatitis, syphilis, hiv,
-                drug_use, alcohol_use,
-                tattoo_artist, tattoo_details, tattoo_ink,
-                legal_guardian, legal_dni, legal_dob, legal_address, legal_city,
-                filename, date
-            ])
+        consentimiento_id = str(uuid.uuid4())
+        data = {
+            'id': consentimiento_id,
+            'Nombre': full_name,
+            'DNI': dni,
+            'Edad': age,
+            'Fecha Nacimiento': dob,
+            'Dirección': address,
+            'Localidad': city,
+            'Teléfono': phone,
+            'Email': email,
+            'Problemas Cardíacos': cardiac_issues,
+            'Epilepsia': epilepsy,
+            'Hepatitis': hepatitis,
+            'Sífilis': syphilis,
+            'VIH': hiv,
+            'Consumo Drogas': drug_use,
+            'Consumo Alcohol': alcohol_use,
+            'Tatuador': tattoo_artist,
+            'Detalles Tatuaje': tattoo_details,
+            'Tinta/Acessorios': tattoo_ink,
+            'Rep Legal Nombre': legal_guardian,
+            'Rep Legal DNI': legal_dni,
+            'Rep Legal Fecha Nac': legal_dob,
+            'Rep Legal Dirección': legal_address,
+            'Rep Legal Localidad': legal_city,
+            'Firma Archivo': filename,
+            'Fecha Consentimiento': date
+        }
+        with open(os.path.join(DOCS_FOLDER, f"{consentimiento_id}.json"), 'w', encoding='utf-8') as fjson:
+            json.dump(data, fjson, ensure_ascii=False, indent=4)
     except Exception as e:
-        return f"Error al guardar en CSV: {e}"
+        return f"Error al guardar en JSON: {e}"
 
     return "Formulario enviado con éxito"
 
@@ -131,10 +145,16 @@ def submit_form():
 @login_required
 def ver_consentimientos():
     datos = []
-    if os.path.exists(CSV_FILE):
-        with open(CSV_FILE, newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile)
-            datos = list(reader)
+    if os.path.exists(DOCS_FOLDER):
+        for filename in os.listdir(DOCS_FOLDER):
+            if filename.endswith('.json'):
+                ruta = os.path.join(DOCS_FOLDER, filename)
+                with open(ruta, encoding='utf-8') as fjson:
+                    try:
+                        data = json.load(fjson)
+                        datos.append(data)
+                    except:
+                        pass
     return render_template('consentimientos.html', consentimientos=datos)
 
 @app.route('/firmas/<filename>')
@@ -143,59 +163,63 @@ def serve_firma(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-# --- NUEVO: Ruta para borrar consentimiento ---
 @app.route('/borrar_consentimiento', methods=['POST'])
 @login_required
 def borrar_consentimiento():
-    dni_a_borrar = request.form.get('dni')
-    if not dni_a_borrar:
-        flash("No se recibió DNI para borrar.")
+    dni = request.form.get('dni')  # Recibimos el dni del formulario
+
+    if not dni:
+        flash("No se recibió DNI para borrar el consentimiento.")
         return redirect(url_for('ver_consentimientos'))
 
-    if not os.path.exists(CSV_FILE):
-        flash("No hay registros para borrar.")
-        return redirect(url_for('ver_consentimientos'))
-
-    # Leer todos los consentimientos
-    with open(CSV_FILE, newline='', encoding='utf-8') as csvfile:
-        reader = list(csv.DictReader(csvfile))
-        campos = reader[0].keys() if reader else []
-
-    # Filtrar consentimientos, eliminando el que coincide con el DNI
-    nuevos_datos = []
+    # Buscar el archivo JSON que tenga el DNI que queremos borrar
+    consentimiento_a_borrar = None
     firma_a_borrar = None
-    for fila in reader:
-        if fila.get('DNI') == dni_a_borrar:
-            firma_a_borrar = fila.get('Firma Archivo')
-            continue
-        nuevos_datos.append(fila)
+    for filename in os.listdir(DOCS_FOLDER):
+        if filename.endswith('.json'):
+            ruta = os.path.join(DOCS_FOLDER, filename)
+            try:
+                with open(ruta, encoding='utf-8') as fjson:
+                    data = json.load(fjson)
+                    if data.get('DNI') == dni:
+                        consentimiento_a_borrar = ruta
+                        firma_a_borrar = data.get('Firma Archivo')
+                        break
+            except Exception as e:
+                flash(f"Error leyendo archivo {filename}: {e}")
+                return redirect(url_for('ver_consentimientos'))
 
-    # Guardar el CSV sin el consentimiento borrado
-    with open(CSV_FILE, 'w', newline='', encoding='utf-8') as csvfile:
-        if campos:
-            writer = csv.DictWriter(csvfile, fieldnames=campos)
-            writer.writeheader()
-            writer.writerows(nuevos_datos)
+    if consentimiento_a_borrar is None:
+        flash("No se encontró consentimiento con ese DNI.")
+        return redirect(url_for('ver_consentimientos'))
 
-    # Borrar la imagen de la firma si existe
+    # Borrar archivo JSON
+    try:
+        os.remove(consentimiento_a_borrar)
+    except Exception as e:
+        flash(f"Error borrando archivo de consentimiento: {e}")
+        return redirect(url_for('ver_consentimientos'))
+
+    # Borrar archivo de firma si existe
     if firma_a_borrar:
         ruta_firma = os.path.join(UPLOAD_FOLDER, firma_a_borrar)
         if os.path.exists(ruta_firma):
-            os.remove(ruta_firma)
+            try:
+                os.remove(ruta_firma)
+            except Exception as e:
+                flash(f"Error borrando archivo de firma: {e}")
+                return redirect(url_for('ver_consentimientos'))
 
-    flash(f"Consentimiento con DNI {dni_a_borrar} borrado correctamente.")
+    flash("Consentimiento borrado correctamente.")
     return redirect(url_for('ver_consentimientos'))
 
-# --- NUEVA RUTA PARA POLITICA DE PRIVACIDAD ---
 @app.route('/politica-de-privacidad')
 def politica_privacidad():
     return render_template('politica_privacidad.html')
 
-# --- NUEVA RUTA PARA POLITICA DE COOKIES ---
 @app.route('/politica-de-cookies')
 def politica_cookies():
     return render_template('politica_cookies.html')
-
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)

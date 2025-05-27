@@ -21,23 +21,25 @@
         a.logout:hover {
             background-color: #c9302c;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
+        ul.consent-list {
+            list-style-type: none;
+            padding: 0;
         }
-        th, td {
+        ul.consent-list > li {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
         }
-        th {
-            background-color: #f2f2f2;
-        }
-        h1 {
+        ul.consent-list > li > h2 {
+            margin-top: 0;
             margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+        ul.consent-list > li p {
+            margin: 4px 0;
+            font-size: 0.9em;
         }
         button.delete-btn {
             background-color: #d9534f;
@@ -46,9 +48,23 @@
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button.delete-btn:hover {
             background-color: #c9302c;
+        }
+        a.view-firma {
+            display: inline-block;
+            margin-top: 10px;
+            background-color: #5bc0de;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        a.view-firma:hover {
+            background-color: #31b0d5;
         }
         form.inline {
             display: inline;
@@ -61,81 +77,45 @@
     <a class="logout" href="{{ url_for('logout') }}">Cerrar sesión</a>
 
     {% if consentimientos %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>DNI</th>
-                    <th>Edad</th>
-                    <th>Fecha Nacimiento</th>
-                    <th>Dirección</th>
-                    <th>Localidad</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Problemas Cardíacos</th>
-                    <th>Epilepsia</th>
-                    <th>Hepatitis</th>
-                    <th>Sífilis</th>
-                    <th>VIH</th>
-                    <th>Consumo Drogas</th>
-                    <th>Consumo Alcohol</th>
-                    <th>Tatuador</th>
-                    <th>Detalles Tatuaje</th>
-                    <th>Tinta/Acessorios</th>
-                    <th>Rep Legal Nombre</th>
-                    <th>Rep Legal DNI</th>
-                    <th>Rep Legal Fecha Nac</th>
-                    <th>Rep Legal Dirección</th>
-                    <th>Rep Legal Localidad</th>
-                    <th>Firma Archivo</th>
-                    <th>Fecha Consentimiento</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for fila in consentimientos %}
-                <tr>
-                    <td>{{ fila['Nombre'] }}</td>
-                    <td>{{ fila['DNI'] }}</td>
-                    <td>{{ fila['Edad'] }}</td>
-                    <td>{{ fila['Fecha Nacimiento'] }}</td>
-                    <td>{{ fila['Dirección'] }}</td>
-                    <td>{{ fila['Localidad'] }}</td>
-                    <td>{{ fila['Teléfono'] }}</td>
-                    <td>{{ fila['Email'] }}</td>
-                    <td>{{ fila['Problemas Cardíacos'] }}</td>
-                    <td>{{ fila['Epilepsia'] }}</td>
-                    <td>{{ fila['Hepatitis'] }}</td>
-                    <td>{{ fila['Sífilis'] }}</td>
-                    <td>{{ fila['VIH'] }}</td>
-                    <td>{{ fila['Consumo Drogas'] }}</td>
-                    <td>{{ fila['Consumo Alcohol'] }}</td>
-                    <td>{{ fila['Tatuador'] }}</td>
-                    <td>{{ fila['Detalles Tatuaje'] }}</td>
-                    <td>{{ fila['Tinta/Acessorios'] }}</td>
-                    <td>{{ fila['Rep Legal Nombre'] }}</td>
-                    <td>{{ fila['Rep Legal DNI'] }}</td>
-                    <td>{{ fila['Rep Legal Fecha Nac'] }}</td>
-                    <td>{{ fila['Rep Legal Dirección'] }}</td>
-                    <td>{{ fila['Rep Legal Localidad'] }}</td>
-                    <td>
-                        {% if fila['Firma Archivo'].endswith('.png') %}
-                            <a href="{{ url_for('serve_firma', filename=fila['Firma Archivo']) }}" target="_blank">Ver Firma</a>
-                        {% else %}
-                            {{ fila['Firma Archivo'] }}
-                        {% endif %}
-                    </td>
-                    <td>{{ fila['Fecha Consentimiento'] }}</td>
-                    <td>
-                        <form method="POST" action="{{ url_for('borrar_consentimiento') }}" class="inline" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
-                            <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
-                            <button type="submit" class="delete-btn">Borrar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <ul class="consent-list">
+            {% for fila in consentimientos %}
+                <li>
+                    <h2>{{ fila['Nombre'] }} — DNI: {{ fila['DNI'] }}</h2>
+                    <p><strong>Edad:</strong> {{ fila['Edad'] }}</p>
+                    <p><strong>Fecha Nacimiento:</strong> {{ fila['Fecha Nacimiento'] }}</p>
+                    <p><strong>Dirección:</strong> {{ fila['Dirección'] }}, {{ fila['Localidad'] }}</p>
+                    <p><strong>Teléfono:</strong> {{ fila['Teléfono'] }}</p>
+                    <p><strong>Email:</strong> {{ fila['Email'] }}</p>
+                    <p><strong>Problemas Cardíacos:</strong> {{ fila['Problemas Cardíacos'] }}</p>
+                    <p><strong>Epilepsia:</strong> {{ fila['Epilepsia'] }}</p>
+                    <p><strong>Hepatitis:</strong> {{ fila['Hepatitis'] }}</p>
+                    <p><strong>Sífilis:</strong> {{ fila['Sífilis'] }}</p>
+                    <p><strong>VIH:</strong> {{ fila['VIH'] }}</p>
+                    <p><strong>Consumo Drogas:</strong> {{ fila['Consumo Drogas'] }}</p>
+                    <p><strong>Consumo Alcohol:</strong> {{ fila['Consumo Alcohol'] }}</p>
+                    <p><strong>Tatuador:</strong> {{ fila['Tatuador'] }}</p>
+                    <p><strong>Detalles Tatuaje:</strong> {{ fila['Detalles Tatuaje'] }}</p>
+                    <p><strong>Tinta/Acessorios:</strong> {{ fila['Tinta/Acessorios'] }}</p>
+                    <p><strong>Rep Legal Nombre:</strong> {{ fila['Rep Legal Nombre'] }}</p>
+                    <p><strong>Rep Legal DNI:</strong> {{ fila['Rep Legal DNI'] }}</p>
+                    <p><strong>Rep Legal Fecha Nac:</strong> {{ fila['Rep Legal Fecha Nac'] }}</p>
+                    <p><strong>Rep Legal Dirección:</strong> {{ fila['Rep Legal Dirección'] }}</p>
+                    <p><strong>Rep Legal Localidad:</strong> {{ fila['Rep Legal Localidad'] }}</p>
+                    <p><strong>Fecha Consentimiento:</strong> {{ fila['Fecha Consentimiento'] }}</p>
+
+                    {% if fila['Firma Archivo'].endswith('.png') %}
+                        <a href="{{ url_for('serve_firma', filename=fila['Firma Archivo']) }}" target="_blank" class="view-firma">Ver Firma</a>
+                    {% else %}
+                        <p><strong>Firma Archivo:</strong> {{ fila['Firma Archivo'] }}</p>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('borrar_consentimiento') }}" class="inline" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
+                        <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
+                        <button type="submit" class="delete-btn">Borrar</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
         <p>No hay consentimientos registrados aún.</p>
     {% endif %}
