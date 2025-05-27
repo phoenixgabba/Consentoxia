@@ -73,8 +73,9 @@
                 <li>
                     <a href="{{ url_for('detalle_consentimiento', consentimiento_id=fila['id']) }}" class="detail-link">
                         {{ fila['Nombre'] }}
-                    </a> — Teléfono: {{ fila['Teléfono'] }}
+                    </a> — Teléfono: {{ fila['Teléfono'] }} — Fecha: {{ fila['Fecha Consentimiento'] }}
 
+                    
                     <form method="POST" action="{{ url_for('borrar_consentimiento') }}" class="inline" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
                         <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
                         <button type="submit" class="delete-btn">Borrar</button>

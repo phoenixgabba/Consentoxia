@@ -9,10 +9,13 @@
 <body>
     <div class="form-container">
         <h1>Consentimiento para la práctica del tatuaje</h1>
-        <p>En Valencia, a <input type="date" id="consent_date" name="date" required></p>
-
-        <h2>Datos cliente</h2>
+        
+        <!-- MOVÍ el input de fecha aquí, dentro del formulario -->
         <form id="consentForm" action="/submit" method="POST">
+            <p>En Valencia, a <input type="date" id="consent_date" name="date" required></p>
+
+            <h2>Datos cliente</h2>
+
             <label for="full_name">Nombre y apellidos completo:</label>
             <input type="text" id="full_name" name="full_name" required />
 
