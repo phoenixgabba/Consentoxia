@@ -88,7 +88,7 @@ def submit_form():
     consentimiento = request.form.get('consentimiento')
 
     if not consentimiento:
-        return "Debe aceptar los términos de consentimiento para continuar."
+        return render_template('mensaje.html', mensaje="Debe aceptar los términos de consentimiento para continuar.")
 
     # Guardar la firma como imagen PNG
     filename = ''
@@ -139,7 +139,7 @@ def submit_form():
     except Exception as e:
         return f"Error al guardar en JSON: {e}"
 
-    return "Formulario enviado con éxito"
+    return render_template('mensaje.html', mensaje="Formulario enviado con éxito.")
 
 @app.route('/consentimientos')
 @login_required
