@@ -142,5 +142,50 @@ def ver_consentimientos():
 def serve_firma(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
+
+# --- NUEVO: Ruta para borrar consentimiento ---
+@app.route('/borrar_consentimiento', methods=['POST'])
+@login_required
+def borrar_consentimiento():
+    dni_a_borrar = request.form.get('dni')
+    if not dni_a_borrar:
+        flash("No se recibió DNI para borrar.")
+        return redirect(url_for('ver_consentimientos'))
+
+    if not os.path.exists(CSV_FILE):
+        flash("No hay registros para borrar.")
+        return redirect(url_for('ver_consentimientos'))
+
+    # Leer todos los consentimientos
+    with open(CSV_FILE, newline='', encoding='utf-8') as csvfile:
+        reader = list(csv.DictReader(csvfile))
+        campos = reader[0].keys() if reader else []
+
+    # Filtrar consentimientos, eliminando el que coincide con el DNI
+    nuevos_datos = []
+    firma_a_borrar = None
+    for fila in reader:
+        if fila.get('DNI') == dni_a_borrar:
+            firma_a_borrar = fila.get('Firma Archivo')
+            continue
+        nuevos_datos.append(fila)
+
+    # Guardar el CSV sin el consentimiento borrado
+    with open(CSV_FILE, 'w', newline='', encoding='utf-8') as csvfile:
+        if campos:
+            writer = csv.DictWriter(csvfile, fieldnames=campos)
+            writer.writeheader()
+            writer.writerows(nuevos_datos)
+
+    # Borrar la imagen de la firma si existe
+    if firma_a_borrar:
+        ruta_firma = os.path.join(UPLOAD_FOLDER, firma_a_borrar)
+        if os.path.exists(ruta_firma):
+            os.remove(ruta_firma)
+
+    flash(f"Consentimiento con DNI {dni_a_borrar} borrado correctamente.")
+    return redirect(url_for('ver_consentimientos'))
+
+
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)

@@ -43,6 +43,23 @@
         h1 {
             margin-bottom: 10px;
         }
+
+        form.borrar-form {
+            margin: 0;
+        }
+
+        button.borrar-btn {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button.borrar-btn:hover {
+            background-color: #c9302c;
+        }
     </style>
 </head>
 <body>
@@ -57,6 +74,7 @@
                     {% for encabezado in consentimientos[0].keys() %}
                         <th>{{ encabezado }}</th>
                     {% endfor %}
+                    <th>Acciones</th> <!-- Nueva columna para botones -->
                 </tr>
             </thead>
             <tbody>
@@ -64,13 +82,20 @@
                     <tr>
                         {% for valor in fila.values() %}
                             <td>
-                                {% if valor.endswith('.png') %}
+                                {% set valor_str = valor|string %}
+                                {% if valor_str.endswith('.png') %}
                                     <a href="{{ url_for('serve_firma', filename=valor) }}" target="_blank">Ver Firma</a>
                                 {% else %}
                                     {{ valor }}
                                 {% endif %}
                             </td>
                         {% endfor %}
+                        <td>
+                            <form class="borrar-form" action="{{ url_for('borrar_consentimiento') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
+                                <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
+                                <button type="submit" class="borrar-btn">Borrar</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
