@@ -3,22 +3,28 @@ let ctx = canvas.getContext('2d');
 
 let drawing = false;
 
+// Ajustar grosor y estilo de línea para que se vea mejor
+ctx.lineWidth = 2;
+ctx.lineCap = 'round';
+ctx.strokeStyle = '#d4af37';
+
 // Función para empezar a dibujar
 canvas.addEventListener('touchstart', startDrawing);
 canvas.addEventListener('mousedown', startDrawing);
 
 function startDrawing(e) {
-    e.preventDefault();  // Evita el comportamiento predeterminado (ej. scrolling en móviles)
+    e.preventDefault();
     drawing = true;
     ctx.beginPath();
     if (e.type === 'touchstart') {
-        ctx.moveTo(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop);
+        const touch = e.touches[0];
+        ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
     } else {
         ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
     }
 }
 
-// Función para dibujar mientras se mantiene el dedo o el ratón presionado
+// Dibujar mientras toca o mueve ratón
 canvas.addEventListener('touchmove', draw);
 canvas.addEventListener('mousemove', draw);
 
@@ -26,14 +32,15 @@ function draw(e) {
     if (!drawing) return;
     e.preventDefault();
     if (e.type === 'touchmove') {
-        ctx.lineTo(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop);
+        const touch = e.touches[0];
+        ctx.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
     } else {
         ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
     }
     ctx.stroke();
 }
 
-// Función para detener el dibujo
+// Parar dibujo
 canvas.addEventListener('touchend', stopDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
 
@@ -41,7 +48,7 @@ function stopDrawing() {
     drawing = false;
 }
 
-// Función para borrar la firma
+// Borrar firma
 function clearSignature() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
