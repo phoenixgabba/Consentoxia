@@ -1,25 +1,85 @@
 import os
 import base64
-from flask import Flask, render_template, request
+import csv
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash
+from functools import wraps
 from waitress import serve
 
 app = Flask(__name__)
+app.secret_key = 'clave_super_segura_que_debes_cambiar'
 
-# Carpeta para guardar las firmas
 UPLOAD_FOLDER = 'firmas'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+USUARIO = 'admin'
+CONTRASENA = '1234'
+CSV_FILE = 'consentimientos.csv'
+
+# Decorador para requerir login con sesión
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash("Por favor, inicia sesión para acceder.")
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == USUARIO and password == CONTRASENA:
+            session['logged_in'] = True
+            flash('Inicio de sesión exitoso.')
+            return redirect(url_for('ver_consentimientos'))
+        else:
+            flash('Usuario o contraseña incorrectos.')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()
+    flash('Has cerrado sesión.')
+    return redirect(url_for('login'))
+
 @app.route('/submit', methods=['POST'])
 def submit_form():
+    # Recoger todos los campos enviados desde el formulario
     full_name = request.form.get('full_name')
+    dni = request.form.get('dni')
+    age = request.form.get('age')
     dob = request.form.get('dob')
-    contact_info = request.form.get('contact_info')
-    health_conditions = request.form.get('health_conditions')
+    address = request.form.get('address')
+    city = request.form.get('city')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
+
+    cardiac_issues = request.form.get('cardiac_issues')
+    epilepsy = request.form.get('epilepsy')
+    hepatitis = request.form.get('hepatitis')
+    syphilis = request.form.get('syphilis')
+    hiv = request.form.get('hiv')
+    drug_use = request.form.get('drug_use')
+    alcohol_use = request.form.get('alcohol_use')
+
+    tattoo_artist = request.form.get('tattoo_artist')
+    tattoo_details = request.form.get('tattoo_details')
+    tattoo_ink = request.form.get('tattoo_ink')
+
+    legal_guardian = request.form.get('legal_guardian')
+    legal_dni = request.form.get('legal_dni')
+    legal_dob = request.form.get('legal_dob')
+    legal_address = request.form.get('legal_address')
+    legal_city = request.form.get('legal_city')
+
     signature = request.form.get('signature')  # Firma en base64
     date = request.form.get('date')            # Fecha del consentimiento
     consentimiento = request.form.get('consentimiento')
@@ -28,6 +88,7 @@ def submit_form():
         return "Debe aceptar los términos de consentimiento para continuar."
 
     # Guardar la firma como imagen PNG
+    filename = ''
     if signature and signature != 'data:,':
         try:
             header, encoded = signature.split(',', 1)
@@ -39,18 +100,47 @@ def submit_form():
         except Exception as e:
             return f"Error al guardar la firma: {e}"
 
-    # Mostrar datos en consola (puedes cambiar por lógica propia)
-    print(f"Nombre: {full_name}")
-    print(f"Fecha de Nacimiento: {dob}")
-    print(f"Contacto: {contact_info}")
-    print(f"Condiciones de Salud: {health_conditions}")
-    print(f"Firma guardada en: {filepath if signature else 'No proporcionada'}")
-    print(f"Fecha de Consentimiento: {date}")
-
-    if consentimiento == 'true':
-        print(f"Consentimiento para recibir publicidad: {contact_info}")
+    # Guardar datos en CSV
+    try:
+        file_exists = os.path.exists(CSV_FILE)
+        with open(CSV_FILE, 'a', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            if not file_exists:
+                writer.writerow([
+                    'Nombre', 'DNI', 'Edad', 'Fecha Nacimiento', 'Dirección', 'Localidad', 'Teléfono', 'Email',
+                    'Problemas Cardíacos', 'Epilepsia', 'Hepatitis', 'Sífilis', 'VIH',
+                    'Consumo Drogas', 'Consumo Alcohol',
+                    'Tatuador', 'Detalles Tatuaje', 'Tinta/Acessorios',
+                    'Rep Legal Nombre', 'Rep Legal DNI', 'Rep Legal Fecha Nac', 'Rep Legal Dirección', 'Rep Legal Localidad',
+                    'Firma Archivo', 'Fecha Consentimiento'
+                ])
+            writer.writerow([
+                full_name, dni, age, dob, address, city, phone, email,
+                cardiac_issues, epilepsy, hepatitis, syphilis, hiv,
+                drug_use, alcohol_use,
+                tattoo_artist, tattoo_details, tattoo_ink,
+                legal_guardian, legal_dni, legal_dob, legal_address, legal_city,
+                filename, date
+            ])
+    except Exception as e:
+        return f"Error al guardar en CSV: {e}"
 
     return "Formulario enviado con éxito"
+
+@app.route('/consentimientos')
+@login_required
+def ver_consentimientos():
+    datos = []
+    if os.path.exists(CSV_FILE):
+        with open(CSV_FILE, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            datos = list(reader)
+    return render_template('consentimientos.html', consentimientos=datos)
+
+@app.route('/firmas/<filename>')
+@login_required
+def serve_firma(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
