@@ -9,7 +9,6 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
         a.logout {
             display: inline-block;
             margin-bottom: 20px;
@@ -19,46 +18,40 @@
             text-decoration: none;
             border-radius: 4px;
         }
-
         a.logout:hover {
             background-color: #c9302c;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            font-size: 14px;
         }
-
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 8px;
             text-align: left;
+            vertical-align: top;
         }
-
         th {
             background-color: #f2f2f2;
         }
-
         h1 {
             margin-bottom: 10px;
         }
-
-        form.borrar-form {
-            margin: 0;
-        }
-
-        button.borrar-btn {
+        button.delete-btn {
             background-color: #d9534f;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
         }
-
-        button.borrar-btn:hover {
+        button.delete-btn:hover {
             background-color: #c9302c;
+        }
+        form.inline {
+            display: inline;
         }
     </style>
 </head>
@@ -71,32 +64,75 @@
         <table>
             <thead>
                 <tr>
-                    {% for encabezado in consentimientos[0].keys() %}
-                        <th>{{ encabezado }}</th>
-                    {% endfor %}
-                    <th>Acciones</th> <!-- Nueva columna para botones -->
+                    <th>Nombre</th>
+                    <th>DNI</th>
+                    <th>Edad</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Dirección</th>
+                    <th>Localidad</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Problemas Cardíacos</th>
+                    <th>Epilepsia</th>
+                    <th>Hepatitis</th>
+                    <th>Sífilis</th>
+                    <th>VIH</th>
+                    <th>Consumo Drogas</th>
+                    <th>Consumo Alcohol</th>
+                    <th>Tatuador</th>
+                    <th>Detalles Tatuaje</th>
+                    <th>Tinta/Acessorios</th>
+                    <th>Rep Legal Nombre</th>
+                    <th>Rep Legal DNI</th>
+                    <th>Rep Legal Fecha Nac</th>
+                    <th>Rep Legal Dirección</th>
+                    <th>Rep Legal Localidad</th>
+                    <th>Firma Archivo</th>
+                    <th>Fecha Consentimiento</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for fila in consentimientos %}
-                    <tr>
-                        {% for valor in fila.values() %}
-                            <td>
-                                {% set valor_str = valor|string %}
-                                {% if valor_str.endswith('.png') %}
-                                    <a href="{{ url_for('serve_firma', filename=valor) }}" target="_blank">Ver Firma</a>
-                                {% else %}
-                                    {{ valor }}
-                                {% endif %}
-                            </td>
-                        {% endfor %}
-                        <td>
-                            <form class="borrar-form" action="{{ url_for('borrar_consentimiento') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
-                                <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
-                                <button type="submit" class="borrar-btn">Borrar</button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ fila['Nombre'] }}</td>
+                    <td>{{ fila['DNI'] }}</td>
+                    <td>{{ fila['Edad'] }}</td>
+                    <td>{{ fila['Fecha Nacimiento'] }}</td>
+                    <td>{{ fila['Dirección'] }}</td>
+                    <td>{{ fila['Localidad'] }}</td>
+                    <td>{{ fila['Teléfono'] }}</td>
+                    <td>{{ fila['Email'] }}</td>
+                    <td>{{ fila['Problemas Cardíacos'] }}</td>
+                    <td>{{ fila['Epilepsia'] }}</td>
+                    <td>{{ fila['Hepatitis'] }}</td>
+                    <td>{{ fila['Sífilis'] }}</td>
+                    <td>{{ fila['VIH'] }}</td>
+                    <td>{{ fila['Consumo Drogas'] }}</td>
+                    <td>{{ fila['Consumo Alcohol'] }}</td>
+                    <td>{{ fila['Tatuador'] }}</td>
+                    <td>{{ fila['Detalles Tatuaje'] }}</td>
+                    <td>{{ fila['Tinta/Acessorios'] }}</td>
+                    <td>{{ fila['Rep Legal Nombre'] }}</td>
+                    <td>{{ fila['Rep Legal DNI'] }}</td>
+                    <td>{{ fila['Rep Legal Fecha Nac'] }}</td>
+                    <td>{{ fila['Rep Legal Dirección'] }}</td>
+                    <td>{{ fila['Rep Legal Localidad'] }}</td>
+                    <td>
+                        {% if fila['Firma Archivo'].endswith('.png') %}
+                            <a href="{{ url_for('serve_firma', filename=fila['Firma Archivo']) }}" target="_blank">Ver Firma</a>
+                        {% else %}
+                            {{ fila['Firma Archivo'] }}
+                        {% endif %}
+                    </td>
+                    <td>{{ fila['Fecha Consentimiento'] }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('borrar_consentimiento') }}" class="inline" onsubmit="return confirm('¿Seguro que quieres borrar este consentimiento?');">
+                            <input type="hidden" name="dni" value="{{ fila['DNI'] }}">
+                            <button type="submit" class="delete-btn">Borrar</button>
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
