@@ -186,6 +186,16 @@ def borrar_consentimiento():
     flash(f"Consentimiento con DNI {dni_a_borrar} borrado correctamente.")
     return redirect(url_for('ver_consentimientos'))
 
+# --- NUEVA RUTA PARA POLITICA DE PRIVACIDAD ---
+@app.route('/politica-de-privacidad')
+def politica_privacidad():
+    return render_template('politica_privacidad.html')
+
+# --- NUEVA RUTA PARA POLITICA DE COOKIES ---
+@app.route('/politica-de-cookies')
+def politica_cookies():
+    return render_template('politica_cookies.html')
+
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
