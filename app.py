@@ -12,8 +12,8 @@ UPLOAD_FOLDER = 'firmas'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-USUARIO = 'admin'
-CONTRASENA = '1234'
+USUARIO = 'La Nuit'
+CONTRASENA = '1551'
 CSV_FILE = 'consentimientos.csv'
 
 # Decorador para requerir login con sesión
